@@ -8,7 +8,8 @@ export const accountConnected2MetaMask = async () => {
     method: "eth_accounts",
   });
   if (accounts.length === 0) {
-    return "";
+    return null;
+    //return "";
   }
   return accounts[0];
 };

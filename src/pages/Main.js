@@ -1,4 +1,5 @@
 import React, { useEffect, useReducer } from "react";
+import { FaNewspaper } from "react-icons/fa";
 import {
   Heading,
   Text,
@@ -8,15 +9,23 @@ import {
   Box,
   Badge,
   UnorderedList,
+  List,
   ListItem,
+  ListIcon,
   NumberInput,
   NumberInputField,
   NumberInputStepper,
   NumberIncrementStepper,
   NumberDecrementStepper,
+  SimpleGrid,
+  FormControl,
+  Spinner,
+  Link,
+  Input,
 } from "@chakra-ui/core";
 // https://docs.ethers.io/v5/
 import { ethers } from "ethers";
+import axios from "axios";
 import {
   accountConnected2MetaMask,
   sendEtherTransaction,
@@ -69,14 +78,43 @@ const dappReducer = (state, action) => {
 //ICO address receiving ethers and selling tokens with values shown in ethers
 const initialDappState = {
   buyValue: 0.05,
-  ratioEtherToToken: 10,
   isConnecting: false,
-  myAddr: "0xB6e790Df0aB9Abb7E261e467Be6b65aF0d88E133",
+  myAddr: "0xacBC986A8BEA22b8756577C77848197E29E5fa93",
+};
+
+const fetchReducer = (state, action) => {
+  switch (action.type) {
+    case "FETCH_INIT":
+      return { ...state, isLoading: true, isError: false };
+    case "FETCH_SUCCESS":
+      return {
+        ...state,
+        isLoading: false,
+        data: action.payload,
+      };
+    case "FETCH_FAILURE":
+      return { ...state, isLoading: false, isError: true };
+    case "SET_QUERY":
+      return { ...state, query: action.payload };
+    case "SET_URL":
+      return { ...state, url: action.payload };
+    default:
+      throw new Error(`Unhandled action ${action.type} in fetchReducer`);
+  }
+};
+
+const initialFetchState = {
+  data: { hits: [] },
+  query: "redux",
+  url: "https://hn.algolia.com/api/v1/search?query=redux",
+  isLoading: false,
+  isError: false,
 };
 
 function Main() {
   const [web3State, web3Dispatch] = useReducer(web3Reducer, initialWeb3State);
   const [dappState, dappDispatch] = useReducer(dappReducer, initialDappState);
+  const [fetchState, dispatch] = useReducer(fetchReducer, initialFetchState);
 
   //event handler when clicking to connect to MetaMask
   const handleConnectButtonClick = () => {
@@ -92,10 +130,11 @@ function Main() {
     });
   };
 
+  //event handler to send value for buying tokens
   const handleBuyButtonClick = async () =>
     await sendEtherTransaction(web3State.signer, web3State.provider, {
       to: dappState.myAddr,
-      value: String(ethers.utils.parseEther(dappState.buyValue)),
+      value: ethers.utils.parseEther(dappState.buyValue),
     });
 
   // Check if Web3 is injected only on mount
@@ -210,15 +249,74 @@ initial address 0. In any case, success or failure, close the connecting phase
     }
   }, [web3State.isEnabled, web3State.account]);
 
+  useEffect(() => {
+    const fetchData = async () => {
+      dispatch({ type: "FETCH_INIT" });
+      try {
+        const result = await axios(fetchState.url);
+        dispatch({ type: "FETCH_SUCCESS", payload: result.data });
+      } catch (error) {
+        dispatch({ type: "FETCH_FAILURE" });
+      }
+    };
+    fetchData();
+  }, [fetchState.url]);
+
   return (
-    <>
+    <SimpleGrid columns={2} spacing={10}>
       <VStack>
-        <Heading as="h1" mb={5}>
-          Web3 demo
-        </Heading>
-        <Heading mb={10} size="lg">
-          Connection, transaction and smart contracts
-        </Heading>
+        <Heading mb={5}>Check Tech news on your favorite topic...</Heading>
+        <form
+          onSubmit={(event) => {
+            event.preventDefault();
+            dispatch({
+              type: "SET_URL",
+              payload: `http://hn.algolia.com/api/v1/search?query=${fetchState.query}`,
+            });
+            event.target.reset();
+          }}
+        >
+          <FormControl id="search-term" isRequired>
+            <HStack>
+              <Input
+                type="text"
+                value={fetchState.query}
+                placeholder="e.g. react"
+                mb={5}
+                onChange={(event) =>
+                  dispatch({ type: "SET_QUERY", payload: event.target.value })
+                }
+              />
+              <Button
+                type="submit"
+                isLoading={fetchState.isLoading}
+                loadingText="Searching"
+                colorScheme="blue"
+                mb={5}
+              >
+                Search
+              </Button>
+            </HStack>
+          </FormControl>
+        </form>
+        {fetchState.isError && <div>Something went wrong ...</div>}
+        {fetchState.isLoading ? (
+          <Spinner />
+        ) : (
+          <List>
+            {fetchState.data.hits.map((item) => (
+              <ListItem key={item.objectID}>
+                <ListIcon as={FaNewspaper} color="green.500" />
+                <Link href={item.url} isExternal>
+                  {item.title}
+                </Link>
+              </ListItem>
+            ))}
+          </List>
+        )}
+      </VStack>
+      <VStack>
+        <Heading mb={5}>and buy New tokens during our ICO</Heading>
 
         {!web3State.isWeb3 && <Text>Please install MetaMask</Text>}
 
@@ -239,16 +337,14 @@ initial address 0. In any case, success or failure, close the connecting phase
             <>
               <UnorderedList>
                 <ListItem mb={3}>
-                  Account: <Text as="b">{web3State.account}</Text>
+                  Your account: <Text as="b">{web3State.account}</Text>
                 </ListItem>
                 <ListItem mb={3}>
-                  Balance: <Text as="b">{web3State.balance}</Text>
+                  Your balance: <Text as="b">{web3State.balance}</Text>
                 </ListItem>
                 <ListItem mb={3}>
-                  Network name: <Text as="b">{web3State.network.name}</Text>
-                </ListItem>
-                <ListItem mb={3}>
-                  Network id: <Text as="b">{web3State.network.chainId}</Text>
+                  You are connected to the network:{" "}
+                  <Text as="b">{web3State.network.name}</Text>
                 </ListItem>
               </UnorderedList>
               <HStack>
@@ -268,18 +364,21 @@ initial address 0. In any case, success or failure, close the connecting phase
                   </NumberInputStepper>
                 </NumberInput>
 
-                <Button onClick={handleBuyButtonClick}>
-                  Buy New tokens for {dappState.buyValue} ETH
+                <Button colorScheme="red" onClick={handleBuyButtonClick}>
+                  buy {dappState.buyValue} ETH
                 </Button>
               </HStack>
-              <Text as="i">1 ether for 10 New tokens</Text>
+              <Text as="i">
+                Puisque 1 ether vaut 10 New tokens cela vous fait{" "}
+                {dappState.buyValue * 10} New tokens
+              </Text>
             </>
           )}
         {!web3State.isEnabled && (
           <Button onClick={handleConnectButtonClick}>Connect</Button>
         )}
       </VStack>
-    </>
+    </SimpleGrid>
   );
 }
 

@@ -1,8 +1,8 @@
 import React from "react";
-import Test from "./pages/Test";
+import Main from "./pages/Main";
 
 function App() {
-  return <Test />;
+  return <Main />;
 }
 
 export default App;
