@@ -365,11 +365,11 @@ initial address 0. In any case, success or failure, close the connecting phase
                 </NumberInput>
 
                 <Button colorScheme="red" onClick={handleBuyButtonClick}>
-                  buy {dappState.buyValue} ETH
+                  buy New tokens for {dappState.buyValue} ETH
                 </Button>
               </HStack>
               <Text as="i">
-                Puisque 1 ether vaut 10 New tokens cela vous fait{" "}
+                Since 1 ether is worth 10 New tokens this gives you{" "}
                 {dappState.buyValue * 10} New tokens
               </Text>
             </>
