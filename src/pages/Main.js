@@ -77,7 +77,7 @@ const dappReducer = (state, action) => {
 
 //ICO address receiving ethers and selling tokens with values shown in ethers
 const initialDappState = {
-  buyValue: 0.05,
+  buyValue: "0.05",
   isConnecting: false,
   myAddr: "0xacBC986A8BEA22b8756577C77848197E29E5fa93",
 };
