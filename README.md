@@ -1,40 +1,42 @@
-# Exercice ICO avec interface utilisateur en React
+# Blockchain ICO and React user interface
 
-Le but de cet exercice est de créer une interface utilisateur pour votre ICO.
-Les utilisateurs se connecteront à votre interface pour effectuer un achat de token.
+- 1 repository for Front-End in React: https://github.com/mihaidld/ico-dapp
+- 1 repository for smart contracts in Solidity : https://github.com/mihaidld/ico-solidity
 
-Vous devrez créer 2 repo accessibles depuis github:
+## Smart Contracts
 
-- 1 pour votre frontend React
-- 1 pour vos smart contracts.
+2 smart contracts deployed via `Truffle` on Rinkeby Testnet :
 
-## smart contracts
+- 1 smart contract for the token at `0x579fb12F1fE5682B0E81B37800D484b5ABf56c02`
+- 1 smart contract for the ICO at `0xacBC986A8BEA22b8756577C77848197E29E5fa93`
 
-Je vous recommande d'écrire vos smart contracts sur remix et de les tester sur remix puis ensuite de déployer les versions définitives via Truffle.
-Il faudra 1 smart contract pour le token et 1 smart contract pour l'ICO, vous pouvez vous inspirer de: https://github.com/AbsoluteVirtueXI/blockchain-courses/tree/master/exercices/ethereum/correction-exercices-soutien.md
+Owner has total supply of tokens and has `approved` ICO smart contract address on the interface of the token smart contract.  
+Price of 1 TOKEN is 0.1 Ether.
 
-Déployer le contrat du token, et vous attribuer l'ensemble de la capacité totale des tokens
-Déployer le contrat de l'ICO et configurer le prix à 1 TOKEN pour 0.1 Ether
-
-N'oubliez pas qu'il faudra `approve` le smart contract d'ico depuis le smart contract de token.
-Cela peut être difficile pour ceux qui ont déployé depuis Truffle, pour cela il faudra faudra utiliser le déploiement via "At Address" de remix, où il faudra renseigner l'adresse de déploiement que vous avez récupéré via Truffle.
-(C'est l'astuce que vous avez utilisé pour récupérer les exo que j'avais caché)
-
-## FrontEnd
-
-Setup un projet React comme vu en cours.
-N'oubliez pas d'ajouter la dépendance ethers.js:
+### Install dependencies:
 
 ```zsh
-% yarn add ethers
+% yarn install
 ```
 
-En vous inspirant du cours d'aujourd'hui, implémenter une interface intuitive pour permettre à des utilisateurs d'acheter vos tokens.
-Les achats de tokens se feront par l'envoi d'ethers directement à l'adresse du smart contract de l'ICO.
+### Add environment variables:
 
-https://github.com/AbsoluteVirtueXI/web3-demo-2
+Add _.env_ file with 2 variables `MNEMONIC` and `ENDPOINT_ID` from `Infura`
 
-# Getting Started with Create React App
+## Front-End
+
+Setup interface for users to check news from Hacker News API and buy tokens during ICO.
+
+Setup projet using `React` and `Chakra UI` for styled components.  
+Fetch news using `axios`.  
+Connect to Ethereum network with `ethers.js` library.  
+Links to read news and buttons to connect to MetaMask and buy tokens.
+
+### Install dependencies:
+
+```zsh
+% yarn install
+```
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
