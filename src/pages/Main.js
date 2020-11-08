@@ -3,6 +3,7 @@ import { FaNewspaper } from "react-icons/fa";
 import {
   Heading,
   Text,
+  Center,
   VStack,
   Button,
   HStack,
@@ -263,122 +264,141 @@ initial address 0. In any case, success or failure, close the connecting phase
   }, [fetchState.url]);
 
   return (
-    <SimpleGrid columns={2} spacing={10}>
-      <VStack>
-        <Heading mb={5}>Check Tech news on your favorite topic...</Heading>
-        <form
-          onSubmit={(event) => {
-            event.preventDefault();
-            dispatch({
-              type: "SET_URL",
-              payload: `http://hn.algolia.com/api/v1/search?query=${fetchState.query}`,
-            });
-            event.target.reset();
-          }}
-        >
-          <FormControl id="search-term" isRequired>
-            <HStack>
-              <Input
-                type="text"
-                value={fetchState.query}
-                placeholder="e.g. react"
-                mb={5}
-                onChange={(event) =>
-                  dispatch({ type: "SET_QUERY", payload: event.target.value })
-                }
-              />
-              <Button
-                type="submit"
-                isLoading={fetchState.isLoading}
-                loadingText="Searching"
-                colorScheme="blue"
-                mb={5}
-              >
-                Search
-              </Button>
-            </HStack>
-          </FormControl>
-        </form>
-        {fetchState.isError && <div>Something went wrong ...</div>}
-        {fetchState.isLoading ? (
-          <Spinner />
-        ) : (
-          <List>
-            {fetchState.data.hits.map((item) => (
-              <ListItem key={item.objectID}>
-                <ListIcon as={FaNewspaper} color="green.500" />
-                <Link href={item.url} isExternal>
-                  {item.title}
-                </Link>
-              </ListItem>
-            ))}
-          </List>
-        )}
-      </VStack>
-      <VStack>
-        <Heading mb={5}>and buy New tokens during our ICO</Heading>
-
-        {!web3State.isWeb3 && <Text>Please install MetaMask</Text>}
-
-        {web3State.isWeb3 && (
-          <Box mb={3} alignItems="baseline">
-            MetaMask status:{" "}
-            {web3State.isEnabled ? (
-              <Badge colorScheme="green">connected</Badge>
-            ) : (
-              <Badge colorScheme="red">disconnected</Badge>
-            )}
-          </Box>
-        )}
-
-        {web3State.isEnabled &&
-          web3State.network !== null &&
-          web3State.account !== ethers.constants.AddressZero && (
-            <>
-              <UnorderedList>
-                <ListItem mb={3}>
-                  Your account: <Text as="b">{web3State.account}</Text>
-                </ListItem>
-                <ListItem mb={3}>
-                  Your balance: <Text as="b">{web3State.balance}</Text>
-                </ListItem>
-                <ListItem mb={3}>
-                  You are connected to the network:{" "}
-                  <Text as="b">{web3State.network.name}</Text>
-                </ListItem>
-              </UnorderedList>
+    <>
+      <SimpleGrid columns={2} spacing={10}>
+        <VStack>
+          <Heading mb={5} mt={10}>
+            Check Tech news on your favorite topic...
+          </Heading>
+          <form
+            onSubmit={(event) => {
+              event.preventDefault();
+              dispatch({
+                type: "SET_URL",
+                payload: `http://hn.algolia.com/api/v1/search?query=${fetchState.query}`,
+              });
+              event.target.reset();
+            }}
+          >
+            <FormControl id="search-term" isRequired>
               <HStack>
-                <NumberInput
-                  value={dappState.buyValue}
-                  defaultValue={initialDappState.buyValue}
-                  precision={2}
-                  step={0.05}
-                  min={0}
-                  max={web3State.balance}
-                  onChange={handleChangeValue}
+                <Input
+                  type="text"
+                  value={fetchState.query}
+                  placeholder="e.g. react"
+                  mb={5}
+                  onChange={(event) =>
+                    dispatch({ type: "SET_QUERY", payload: event.target.value })
+                  }
+                />
+                <Button
+                  type="submit"
+                  isLoading={fetchState.isLoading}
+                  loadingText="Searching"
+                  colorScheme="blue"
+                  mb={5}
                 >
-                  <NumberInputField />
-                  <NumberInputStepper>
-                    <NumberIncrementStepper />
-                    <NumberDecrementStepper />
-                  </NumberInputStepper>
-                </NumberInput>
-
-                <Button colorScheme="red" onClick={handleBuyButtonClick}>
-                  buy New tokens for {dappState.buyValue} ETH
+                  Search
                 </Button>
               </HStack>
-              <Text as="i">
-                Since 1 ether is worth 10 New tokens this gives you{" "}
-                {dappState.buyValue * 10} New tokens
-              </Text>
-            </>
+            </FormControl>
+          </form>
+          {fetchState.isError && <div>Something went wrong ...</div>}
+          {fetchState.isLoading ? (
+            <Spinner />
+          ) : (
+            <List>
+              {fetchState.data.hits.map((item) => (
+                <ListItem key={item.objectID}>
+                  <ListIcon as={FaNewspaper} color="green.500" />
+                  <Link href={item.url} isExternal>
+                    {item.title}
+                  </Link>
+                </ListItem>
+              ))}
+            </List>
           )}
-        {!web3State.isEnabled && (
-          <Button onClick={handleConnectButtonClick}>Connect</Button>
-        )}
-      </VStack>
-    </SimpleGrid>
+        </VStack>
+        <VStack>
+          <Heading mb={5} mt={10}>
+            and buy New tokens during our ICO
+          </Heading>
+
+          {!web3State.isWeb3 && <Text>Please install MetaMask</Text>}
+
+          {web3State.isWeb3 && (
+            <Box mb={3} alignItems="baseline">
+              MetaMask status:{" "}
+              {web3State.isEnabled ? (
+                <Badge colorScheme="green">connected</Badge>
+              ) : (
+                <Badge colorScheme="red">disconnected</Badge>
+              )}
+            </Box>
+          )}
+
+          {web3State.isEnabled &&
+            web3State.network !== null &&
+            web3State.account !== ethers.constants.AddressZero && (
+              <>
+                <UnorderedList>
+                  <ListItem mb={3}>
+                    Your account: <Text as="b">{web3State.account}</Text>
+                  </ListItem>
+                  <ListItem mb={3}>
+                    Your balance: <Text as="b">{web3State.balance}</Text>
+                  </ListItem>
+                  <ListItem mb={3}>
+                    You are connected to the network:{" "}
+                    <Text as="b">{web3State.network.name}</Text>
+                  </ListItem>
+                </UnorderedList>
+                <HStack>
+                  <NumberInput
+                    value={dappState.buyValue}
+                    defaultValue={initialDappState.buyValue}
+                    precision={2}
+                    step={0.05}
+                    min={0}
+                    max={web3State.balance}
+                    onChange={handleChangeValue}
+                  >
+                    <NumberInputField />
+                    <NumberInputStepper>
+                      <NumberIncrementStepper />
+                      <NumberDecrementStepper />
+                    </NumberInputStepper>
+                  </NumberInput>
+
+                  <Button colorScheme="red" onClick={handleBuyButtonClick}>
+                    buy New tokens for {dappState.buyValue} ETH
+                  </Button>
+                </HStack>
+                <Text as="i">
+                  Since 1 ether is worth 10 New tokens this gives you{" "}
+                  {dappState.buyValue * 10} New tokens
+                </Text>
+              </>
+            )}
+          {!web3State.isEnabled && (
+            <Button onClick={handleConnectButtonClick}>Connect</Button>
+          )}
+        </VStack>
+      </SimpleGrid>
+      <Center>
+        <Text fontSize="xs">
+          Icons made by{" "}
+          <a href="https://www.flaticon.com/authors/freepik" title="Freepik">
+            Freepik
+          </a>{" "}
+          from{" "}
+          <a href="https://www.flaticon.com/" title="Flaticon">
+            {" "}
+            www.flaticon.com
+          </a>
+        </Text>
+      </Center>
+    </>
   );
 }
 
