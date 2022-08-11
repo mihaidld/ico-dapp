@@ -5,12 +5,14 @@
 
 ## Presentation
 
-Setup interface for users to check news from Hacker News API and buy tokens during ICO.
+Interface for users to check Tech news from Hacker News API and buy tokens during Initial Coin Offering (ICO).
 
-Setup projet using `React` and `Chakra UI` for styled components.  
-Fetch news using `axios`.  
-Connect to Ethereum network with `ethers.js` library.  
-Links to read news and buttons to connect to MetaMask and buy tokens.
+## Features
+
+- Setup projet using `React` and `Chakra UI` for styled components.
+- Fetch news using `axios`.
+- Connect to Ethereum network with `ethers.js` library.
+- Links to read news, connect to MetaMask and buy tokens.
 
 ## Install
 

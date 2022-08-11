@@ -209,7 +209,7 @@ initial address 0. In any case, success or failure, close the connecting phase
         web3Dispatch({ type: "SET_provider", provider });
         console.log(provider);
 
-        /*Returns a JsonRpcSigner which is managed by this Ethereum node and has
+        /*Returns a JsonRpcSigner which is managed by this Ethereum node and
         inherits from Signer sendTransaction method */
         const signer = provider.getSigner();
         web3Dispatch({ type: "SET_signer", signer });
@@ -275,9 +275,9 @@ initial address 0. In any case, success or failure, close the connecting phase
               event.preventDefault();
               dispatch({
                 type: "SET_URL",
-                payload: `http://hn.algolia.com/api/v1/search?query=${fetchState.query}`,
+                payload: `https://hn.algolia.com/api/v1/search?query=${fetchState.query}`,
               });
-              event.target.reset();
+              event.currentTarget.reset();
             }}
           >
             <FormControl id="search-term" isRequired>
